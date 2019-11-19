@@ -89,89 +89,13 @@
             }
         });
 
-        /*let lat_array;
-        let lon_array;
-        let name_array;
-        let open_array;
-        let state_array;*/
         let theme_array = new Array();
         $('#search').click(function() {
             $('#searchBar').sidebar('setting', 'transition', 'overlay').sidebar('toggle')
         });
 
-       /* function reset() { //배열 리셋
-            lat_array = new Array();
-            lon_array = new Array();
-            name_array = new Array();
-            open_array = new Array();
-            state_array = new Array();
-        }*/
-
-        /*function array_add(res) { //배열에 값넣기
-            for (var i in res['lat']) {
-                if (res.lat[i] != "") {
-                    lat_array.push(res['lat'][i]);
-                    lon_array.push(res['lon'][i]);
-                    name_array.push(res['name'][i]);
-                    open_array.push(res['open'][i]);
-                    state_array.push(res['state'][i]);
-                }
-            }
-        }*/
-        let arrChecked = 0;
-        let themeChecked = 0;
-        $('#select').change(function() {
-            $('#select2').find('option:first').attr("selected", "selected");
-            if ($(this).val() != "") {
-                arrChecked = 1;
-                subForm($(this).val());
-            } else {
-                subForm("");
-            }
-        })
-        $('#select2').change(function() {
-            $('#select').find('option:first').attr("selected", "selected");
-            if ($(this).val() != "") {
-                themeChecked = 1;
-                subForm($(this).val());
-            } else {
-                subForm("");
-            }
-        })
         let data;
         $('#count').hide();
-
-        function subForm(value) {
-            deleteMarkers();
-            if (arrChecked) {
-                data = `address=${value}`;
-            } else if (themeChecked) {
-                data = `theme=${value}`;
-            } else {
-                data = "";
-            }
-            $.ajax({
-                url: "./db.php",
-                type: "GET",
-                data: data,
-                success: function(data) {
-                    reset();
-                    array_add(data);
-                    for (var j in lat_array) {
-                        var latlng = new google.maps.LatLng(parseFloat(lat_array[j]), parseFloat(lon_array[j]));
-                        let title = name_array[j];
-                        let open = open_array[j];
-                        let state = state_array[j];
-                        map.panTo(latlng)
-                        addMarker(latlng, title, open, state);
-                        $('#count').show();
-                        $('.detail').text(parseInt(j) + 1);
-                    }
-                }
-            })
-            arrChecked = 0; //주소 체크여부확인
-            themeChecked = 0; //테마 체크여부확인
-        }
         var map;
         var markers = [];
 
@@ -180,55 +104,6 @@
                 markers[i].setMap(map);
             }
         }
-        let iconSet;
-
-       /* function addMarker(location, title, open, state) {
-            switch (state) {
-                case "운영중지":
-                    iconSet = "not.png";
-                case "폐점":
-                    iconSet = "not.png";
-                    break;
-                case "운영중":
-                    iconSet = {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        scale: 8.5,
-                        fillColor: "#f00",
-                        fillOpacity: 0.4,
-                        strokeWeight: 0.4
-                    }
-                    break;
-            }
-
-            var marker = new google.maps.Marker({
-                position: location,
-                map: map,
-                icon: iconSet,
-                //animation: google.maps.Animation.DROP
-            });
-            markers.push(marker);
-            //클릭시 infowindow
-            var contentString = title;
-            var infowindow = new google.maps.InfoWindow({
-                content: contentString
-            });
-            marker.addListener('click', function() {
-                infowindow.open(map, marker);
-                $('#menuBar>.name').find('p').remove();
-                $('#menuBar>.open').find('p').remove();
-                $('#menuBar>.state').find('p').remove();
-                $('#menuBar>.link').find('a').remove();
-                $('#img').find('img').remove();
-                $('#menuBar').find('.name').append(`<p class="item">${title}</p>`);
-                $('#menuBar').find('.open').append(`<p class="item">${open}</p>`);
-                $('#menuBar').find('.state').append(`<p class="item">${state}</p>`);
-                $('#menuBar').find('.link').append(`<a href="#" class="item">연락하기</a>`);
-                $('#menuBar').sidebar('setting', 'transition', 'overlay').sidebar('toggle');
-                setTimeout(function() {
-                    infowindow.close();
-                }, 3000);
-            });
-        }*/
 
         function clearMarkers() {
             setMapOnAll(null);
@@ -238,47 +113,6 @@
             clearMarkers();
             markers = [];
         }
-        $('#delete').click(function() {
-            deleteMarkers();
-        })
-        /*window.onload = function() {
-            reset();
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "./db.php");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    let response = JSON.parse(xhr.responseText);
-                    //값넣기
-                    array_add(response);
-                    //테마는 처음에만 넣기
-                    if (response['theme']) {
-                        for (let i in response['theme']) {
-                            theme_array.push(response['theme'][i])
-                        }
-                    }
-                    //지도에 출력하기
-                    for (var j in lat_array) {
-                        var latlng = new google.maps.LatLng(parseFloat(lat_array[j]), parseFloat(lon_array[j]));
-                        let title = name_array[j];
-                        let open = open_array[j];
-                        let state = state_array[j];
-                        //검색창에 값을 넣기
-                        let word = name_array[j].split(' ');
-                        $('#select').append(`<option value="${word[0]}">${word[0]}</option>`);
-                        addMarker(latlng, title, open, state);
-                    }
-                    //테마값 추가하기
-                    for (var j in theme_array) {
-                        let theme = theme_array[j];
-                        if (theme != "") {
-                            $('#select2').append(`<option value="${theme}">${theme}</option>`);
-                        }
-                    }
-                    //document.getElementById('text').innerHTML = response['name'];
-                }
-            }
-            xhr.send();
-        }*/
 
         function initMap() {
             let center = new google.maps.LatLng(35.157169, 129.059474);
@@ -286,30 +120,11 @@
                 zoom: 16,
                 center: center
             });
-            var geocoder = new google.maps.Geocoder();
-
-            /*document.getElementById('submit').addEventListener('click', function() {
-                geocodeAddress(geocoder, map);
-            });*/
         }
-        //지오코딩
-        /*function geocodeAddress(geocoder, resultsMap) {
-            var address = document.getElementById('address').value;
-            geocoder.geocode({
-                'address': address
-            }, function(results, status) {
-                if (status === 'OK') {
-                    resultsMap.setCenter(results[0].geometry.location);
-                    var marker = new google.maps.Marker({
-                        map: resultsMap,
-                        position: results[0].geometry.location
-                    });
-                } else {
-                    alert('Geocode was not successful for the following reason: ' + status);
-                }
-            });
-        }*/
+
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDF1pqbEh3QHTgfSMTnaRzJvefdSFt49GM&callback=initMap">
     </script>
-</body></html>
+</body>
+
+</html>
