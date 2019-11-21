@@ -30,7 +30,7 @@
     <div class="ui sidebar left vertical menu" id="searchBar">
         <h3 class="item">원하는 곳을 검색</h3>
         <div class="sperate">
-            <select class="ui search  dropdown" name="address" id="select" style="width: 65%;">
+            <select class="ui search  dropdown" name="theme" id="select1" style="width: 65%;">
                 <option value="">All</option>
             </select>
             <a class="ui teal tag label">where</a>
@@ -52,7 +52,6 @@
         <button class="ui blue basic button" id="delete"><i class="delete icon"></i>delete</button>
         <button class="ui red basic button" id="excute">excute</button>
     </div>
-
     <span id="text"></span>
     <script>
         let mW = $('#menuBar').width() - 40;
@@ -120,11 +119,40 @@
                 zoom: 16,
                 center: center
             });
+            var geocoder = new google.maps.Geocoder();
+            document.getElementById('select1').addEventListener('change', function() {
+                geocodeAddress(geocoder, map);
+            });
+            map.data.loadGeoJson('koreaJson.json');
+            map.data.setStyle({
+                fillColor: 'gray',
+                strokeWeight: 0.5
+            });
         }
 
+        function geocodeAddress(geocoder, resultsMap) {
+            var address = document.getElementById('select1').value;
+            geocoder.geocode({
+                'address': address
+            }, function(results, status) {
+                if (status === 'OK') {
+                    resultsMap.setCenter(results[0].geometry.location);
+                    resultsMap.setZoom(14);
+                    var marker = new google.maps.Marker({
+                        map: resultsMap,
+                        zoom: 20,
+                        position: results[0].geometry.location
+                    });
+                    marker.setAnimation(google.maps.Animation.DROP);
+                    setTimeout(function() {
+                        marker.setMap(null);
+                    }, 2000)
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        }
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDF1pqbEh3QHTgfSMTnaRzJvefdSFt49GM&callback=initMap">
     </script>
-</body>
-
-</html>
+</body></html>

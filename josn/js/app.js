@@ -9,6 +9,28 @@
  let open_array;
  let state_array;
 
+ /*$('#select').change(function () {
+     deleteMarkers();
+     var sele = $(this).val();
+     for (let item of jsonData) {
+         if (item['name'].indexOf(sele) != -1) {
+             addPoint(item);
+         } else if (sele == "") {
+             addPoint(item);
+         }
+     }
+ })*/
+ /*$('#select2').change(function () {
+     deleteMarkers();
+     var sele = $(this).val();
+     for (let item of jsonData) {
+         if (item['theme'].indexOf(sele) != -1) {
+             addPoint(item);
+         } else if (sele == "") {
+             addPoint(item);
+         }
+     }
+ })*/
  function addPoint(item) {
      var latlng = new google.maps.LatLng(parseFloat(item['lati']), parseFloat(item['longi']));
      let title = item['name'];
@@ -35,7 +57,7 @@
      state_array.push(res['state']);
  }
 
- function addMarker(location , title, open, state) {
+ function addMarker(location, title, open, state) {
      switch (state) {
          case "운영중지":
              iconSet = "not.png";
@@ -56,10 +78,10 @@
      var marker = new google.maps.Marker({
          position: location,
          map: map,
-         icon: iconSet,
-         animation: google.maps.Animation.DROP
+         icon: iconSet
      });
-     map.panTo(location);
+     /*
+          map.panTo(location);*/
      markers.push(marker);
      //클릭시 infowindow
      var contentString = title;
@@ -83,11 +105,11 @@
          }, 3000);
      });
  }
- let jsonData;
+ let jsonDataFood;
  $(document).ready(function () {
      $.getJSON("./test2.json", function (data) {
-         jsonData = data[2].data;
-         for (var item of jsonData) {
+         jsonDataFood = data[2].data;
+         for (var item of jsonDataFood) {
              naArray.push(item['name'].split(' ')[0]);
              theArray.push(item['theme'].split(' ')[0]);
              array_add(item);
@@ -112,7 +134,41 @@
              addMarker(latlng, title, open, state);
          }
      });
-     $('#select').change(function () {
+     let jsonData;
+     let draw;
+     $.getJSON('./koreaJson.json', function (data) {
+         jsonData = data['features'];
+         for (var i in jsonData) {
+             let item = jsonData[i]['properties']['name'];
+             $('#select1').append(`<option value="${item}">${item}</option>`);
+         }
+     });
+     /*setTimeout(function () {
+         let drawArray = new Array();
+         for (var item of jsonData) {
+             let concet=item['properties']['name'];
+             if (concet== "양산시") {
+                 var draItem = item['geometry']['coordinates'][0];
+                 for (var itmes of draItem) {
+                     drawArray.push({
+                         lat: parseFloat(itmes[0]),
+                         lon: parseFloat(itmes[1])
+                     })
+                 }
+                 break;
+             }
+         }
+         console.log(drawArray);
+         map.data.add({
+             geometry: new google.maps.Data.Polygon([drawArray])
+         });
+         map.data.setStyle({
+             fillColor: 'gray',
+             strokeWeight: 1
+         });
+     }, 5000)*/
+
+     /*$('#select').change(function () {
          deleteMarkers();
          var sele = $(this).val();
          for (let item of jsonData) {
@@ -122,11 +178,11 @@
                  addPoint(item);
              }
          }
-     })
+     })*/
      $('#select2').change(function () {
          deleteMarkers();
          var sele = $(this).val();
-         for (let item of jsonData) {
+         for (let item of jsonDataFood) {
              if (item['theme'].indexOf(sele) != -1) {
                  addPoint(item);
              } else if (sele == "") {
@@ -134,9 +190,7 @@
              }
          }
      })
-
-
      $('#delete').click(function () {
          deleteMarkers();
-     })
+     });
  })
