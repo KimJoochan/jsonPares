@@ -20,12 +20,10 @@
 <body>
     <div class="ui sidebar right vertical menu" id="menuBar">
         <h3 class="item name submenu">가게 이름</h3>
-        <h3 class="item open submenu">오픈 날짜</h3>
         <h3 class="item state submenu">운행 여부</h3>
-        <h3 class="item chart submenu">월별 결과
+        <h3 class="item chart submenu">월별 오더수
             <div id="line1"></div>
         </h3>
-        <h3 class="item link submenu">링크</h3>
     </div>
     <div class="ui sidebar left vertical menu" id="searchBar">
         <h3 class="item">원하는 곳을 검색</h3>
@@ -46,6 +44,7 @@
             <div class="detail"></div>
         </div>
     </div>
+    <p id="reigon"></p>
     <div id="map"></div>
     <div class="ui buttons" id="pos">
         <button class="ui red basic button" id="search"><i class="search icon"></i>search</button>
@@ -66,10 +65,9 @@
                 x: 'x',
                 //        xFormat: '%Y%m%d', // 'xFormat' can be used as custom format of 'x'
                 columns: [
-                    ['x', '2013-01-01', '2013-01-02', '2013-01-03'],
+                    ['x', '2013-01-01', '2013-02-02', '2013-03-03'],
                     //            ['x', '20130101', '20130102', '20130103', '20130104', '20130105', '20130106'],
-                    ['data1', 30, 200, 100],
-                    ['data2', 130, 340, 200]
+                    ['data1', 30, 200, 100]
                 ],
                 type: 'bar'
             },
@@ -114,6 +112,7 @@
         }
 
         function initMap() {
+            let cnts = 0;
             let center = new google.maps.LatLng(35.157169, 129.059474);
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 16,
@@ -124,14 +123,28 @@
                 geocodeAddress(geocoder, map);
             });
             map.data.loadGeoJson('koreaJson.json');
-            map.data.setStyle({
-                fillColor: 'gray',
-                strokeWeight: 0.5
+            map.data.setStyle(function(feature) {
+                var color = '#8f8f8f';
+                return ({
+                    fillColor: color,
+                    strokeColor: color,
+                    strokeWeight: 1
+                });
+            });
+            map.data.addListener('click', function(event) {
+                map.data.revertStyle();
+                map.data.overrideStyle(event.feature, {
+                    strokeWeight: 3,
+                    fillColor: "#efefef"
+                });
+                $("#reigon").fadeIn(200).text("선택:" + event.feature['h']['name']);
+
             });
         }
 
         function geocodeAddress(geocoder, resultsMap) {
             var address = document.getElementById('select1').value;
+            $("#reigon").fadeIn(200).text("선택:" +address);
             geocoder.geocode({
                 'address': address
             }, function(results, status) {

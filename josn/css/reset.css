@@ -48,3 +48,21 @@
     z-index: 99;
     transform: translateX(-50%);
 }
+
+#reigon {
+    width: 150px;
+    height: 40px;
+    position: fixed;
+    z-index: 999;
+    background-color: #fff;
+    box-shadow: 0.5px 0.5px 0.5px 0.5px gray;
+    top: 10px;
+    left: 50%;
+    padding: 5px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 30px;
+    box-sizing: border-box;
+    transform: translateX(-50%);
+    display: none;
+}

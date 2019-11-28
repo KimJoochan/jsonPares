@@ -91,14 +91,9 @@
      marker.addListener('click', function () {
          infowindow.open(map, marker);
          $('#menuBar>.name').find('p').remove();
-         $('#menuBar>.open').find('p').remove();
          $('#menuBar>.state').find('p').remove();
-         $('#menuBar>.link').find('a').remove();
-         $('#img').find('img').remove();
          $('#menuBar').find('.name').append(`<p class="item">${title}</p>`);
-         $('#menuBar').find('.open').append(`<p class="item">${open}</p>`);
          $('#menuBar').find('.state').append(`<p class="item">${state}</p>`);
-         $('#menuBar').find('.link').append(`<a href="#" class="item">연락하기</a>`);
          $('#menuBar').sidebar('setting', 'transition', 'overlay').sidebar('toggle');
          setTimeout(function () {
              infowindow.close();
