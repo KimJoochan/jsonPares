@@ -8,6 +8,7 @@
  let name_array;
  let open_array;
  let state_array;
+ let order_array;
 
  /*$('#select').change(function () {
      deleteMarkers();
@@ -46,6 +47,7 @@
      name_array = new Array();
      open_array = new Array();
      state_array = new Array();
+     order_array = new Array();
  }
  reset();
 
@@ -57,7 +59,7 @@
      state_array.push(res['state']);
  }
 
- function addMarker(location, title, open, state) {
+ function addMarker(location, title, open, state, orders) {
      switch (state) {
          case "운영중지":
              iconSet = "not.png";
@@ -74,7 +76,6 @@
              }
              break;
      }
-
      var marker = new google.maps.Marker({
          position: location,
          map: map,
@@ -94,6 +95,10 @@
          $('#menuBar>.state').find('p').remove();
          $('#menuBar').find('.name').append(`<p class="item">${title}</p>`);
          $('#menuBar').find('.state').append(`<p class="item">${state}</p>`);
+         chart.load({
+             columns: [['orders', orders]],
+             unload: ['data1']
+         });
          $('#menuBar').sidebar('setting', 'transition', 'overlay').sidebar('toggle');
          setTimeout(function () {
              infowindow.close();
@@ -101,6 +106,7 @@
      });
  }
  let jsonDataFood;
+ let ordes = null;
  $(document).ready(function () {
      $.getJSON("./test2.json", function (data) {
          jsonDataFood = data[2].data;
@@ -108,6 +114,13 @@
              naArray.push(item['name'].split(' ')[0]);
              theArray.push(item['theme'].split(' ')[0]);
              array_add(item);
+             var ord = item['memo'].split(' ')[1];
+             if (ord == null) {
+                 ordes = "";
+             } else {
+                 ordes = ord.replace("콜", "")
+             }
+             order_array.push(ordes);
          }
          $.each(naArray, function (i, j) {
              if ($.inArray(j, uniqueName) === -1) uniqueName.push(j);
@@ -126,7 +139,8 @@
              let title = name_array[j];
              let open = open_array[j];
              let state = state_array[j];
-             addMarker(latlng, title, open, state);
+             let orders = order_array[j];
+             addMarker(latlng, title, open, state, orders);
          }
      });
      let jsonData;

@@ -47,9 +47,8 @@
     <p id="reigon"></p>
     <div id="map"></div>
     <div class="ui buttons" id="pos">
-        <button class="ui red basic button" id="search"><i class="search icon"></i>search</button>
-        <button class="ui blue basic button" id="delete"><i class="delete icon"></i>delete</button>
-        <button class="ui red basic button" id="excute">excute</button>
+        <button class="ui olive button" id="search"><i class="search icon"></i>search</button>
+        <button class="ui blue button" id="delete"><i class="delete icon"></i>delete</button>
     </div>
     <span id="text"></span>
     <script>
@@ -73,7 +72,7 @@
             },
             bar: {
                 width: {
-                    ratio: 0.5 // this makes bar width 50% of length between ticks
+                    ratio: 0.2 // this makes bar width 50% of length between ticks
                 }
             },
             axis: {
@@ -144,7 +143,7 @@
 
         function geocodeAddress(geocoder, resultsMap) {
             var address = document.getElementById('select1').value;
-            $("#reigon").fadeIn(200).text("선택:" +address);
+            $("#reigon").fadeIn(200).text("선택:" + address);
             geocoder.geocode({
                 'address': address
             }, function(results, status) {

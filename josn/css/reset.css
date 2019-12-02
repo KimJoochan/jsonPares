@@ -50,8 +50,8 @@
 }
 
 #reigon {
-    width: 150px;
-    height: 40px;
+    width: auto;
+    height: auto;
     position: fixed;
     z-index: 999;
     background-color: #fff;
