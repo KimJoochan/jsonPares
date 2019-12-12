@@ -62,19 +62,16 @@
  function addMarker(location, title, open, state, orders) {
      switch (state) {
          case "운영중지":
-             iconSet = "not.png";
          case "폐점":
-             iconSet = "not.png";
+             orders = 88;
              break;
-         case "운영중":
-             iconSet = {
-                 path: google.maps.SymbolPath.CIRCLE,
-                 scale: 8.5,
-                 fillColor: "#f00",
-                 fillOpacity: 0.4,
-                 strokeWeight: 0.4
-             }
-             break;
+     }
+     iconSet = {
+         path: google.maps.SymbolPath.CIRCLE,
+         scale: 8.5,
+         fillColor: "#f00",
+         fillOpacity: 0.4,
+         strokeWeight: 0.4
      }
      var marker = new google.maps.Marker({
          position: location,
@@ -94,7 +91,16 @@
          $('#menuBar>.name').find('p').remove();
          $('#menuBar>.state').find('p').remove();
          $('#menuBar').find('.name').append(`<p class="item">${title}</p>`);
-         $('#menuBar').find('.state').append(`<p class="item">${state}</p>`);
+         /*$('#menuBar').find('.state').append(`<p class="item">${state}</p>`);*/
+         if (state == '운영중지') {
+             chart.data.colors({
+                 orders: d3.rgb('#ff33cb')
+             })
+         } else {
+             chart.data.colors({
+                 orders: d3.rgb('#FF7F00')
+             })
+         }
          chart.load({
              columns: [['orders', orders]],
              unload: ['data1']
@@ -108,8 +114,8 @@
  let jsonDataFood;
  let ordes = null;
  $(document).ready(function () {
-     $.getJSON("./test2.json", function (data) {
-         jsonDataFood = data[2].data;
+     $.getJSON("./test1.json", function (data) {
+         jsonDataFood = data[2]['data'];
          for (var item of jsonDataFood) {
              naArray.push(item['name'].split(' ')[0]);
              theArray.push(item['theme'].split(' ')[0]);
@@ -192,7 +198,9 @@
          deleteMarkers();
          var sele = $(this).val();
          for (let item of jsonDataFood) {
-             if (item['theme'].indexOf(sele) != -1) {
+             /*console.log(`${sele}:${item['theme']}`);
+             console.log()*/
+             if (sele.trim()==item['theme'].trim()) {
                  addPoint(item);
              } else if (sele == "") {
                  addPoint(item);
