@@ -1,0 +1,68 @@
+#map {
+    width: 100vw;
+    height: 90vh;
+}
+
+#floating-panel {
+    position: absolute;
+    top: 10px;
+    left: 25%;
+    z-index: 5;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #999;
+    text-align: center;
+    font-family: 'Roboto', 'sans-serif';
+    line-height: 30px;
+    padding-left: 10px;
+}
+
+#menuBar {
+    background-color: blanchedalmond;
+}
+
+#menuBar > .submenu {
+    width: 100%;
+    height: auto;
+    float: left;
+    margin: 0;
+    padding: 15px 5px;
+    padding-bottom: 0px;
+}
+
+.submenu > .item {
+    box-sizing: border-box;
+}
+
+.sperate {
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+#pos {
+    width: 250px;
+    height: auto;
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+    z-index: 99;
+    transform: translateX(-50%);
+}
+
+#reigon {
+    width: auto;
+    height: auto;
+    position: fixed;
+    z-index: 999;
+    background-color: #fff;
+    box-shadow: 0.5px 0.5px 0.5px 0.5px gray;
+    top: 10px;
+    left: 50%;
+    padding: 5px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 30px;
+    box-sizing: border-box;
+    transform: translateX(-50%);
+    display: none;
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Geocoding Service</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <link href="css/reset.css" rel="stylesheet" type="text/css">
+    <link href="css/jquery-ui.css" type="text/css" rel="stylesheet">
+    <link href="semantic/semantic.css" type="text/css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="semantic/semantic.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.css" />
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.js"></script>
+    <script src="js/app.js"></script>
+</head>
+
+<body>
+    <div class="ui sidebar right vertical menu" id="menuBar">
+        <h3 class="item name submenu">가게 이름</h3>
+        <h3 class="item chart submenu">월별 오더수
+            <div id="line1"></div>
+        </h3>
+    </div>
+    <div class="ui sidebar left vertical menu" id="searchBar">
+        <h3 class="item">원하는 곳을 검색</h3>
+        <div class="sperate">
+            <select class="ui search  dropdown" name="theme" id="select1" style="width: 65%;">
+                <option value="">All</option>
+            </select>
+            <a class="ui teal tag label">where</a>
+        </div>
+        <div class="sperate">
+            <select class="ui search  dropdown" name="theme" id="select2" style="width: 65%;">
+                <option value="">All</option>
+            </select>
+            <label class="ui teal tag label">theme</label>
+        </div>
+        <div class="ui large label" id="count">
+            place
+            <div class="detail"></div>
+        </div>
+    </div>
+    <p id="reigon"></p>
+    <div id="map"></div>
+    <div class="ui buttons" id="pos">
+        <button class="ui olive button" id="search"><i class="search icon"></i>search</button>
+        <button class="ui blue button" id="delete"><i class="delete icon"></i>delete</button>
+    </div>
+    <span id="text"></span>
+    <script>
+        let mW = $('#menuBar').width() - 40;
+        /*차트보여주기*/
+        var chart = c3.generate({
+            bindto: "#line1",
+            size: {
+                height: mW,
+                width: mW
+            },
+            data: {
+                x: 'x',
+                //        xFormat: '%Y%m%d', // 'xFormat' can be used as custom format of 'x'
+                columns: [
+                    ['x', '2013-01-01', '2013-02-02', '2013-03-03'],
+                    //            ['x', '20130101', '20130102', '20130103', '20130104', '20130105', '20130106'],
+                    ['data1', 30, 200, 100]
+                ],
+                type: 'bar'
+            },
+            bar: {
+                width: {
+                    ratio: 0.2 // this makes bar width 50% of length between ticks
+                }
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        format: '%Y-%m-%d'
+                    }
+                }
+            }
+        });
+
+        let theme_array = new Array();
+        $('#search').click(function() {
+            $('#searchBar').sidebar('setting', 'transition', 'overlay').sidebar('toggle')
+        });
+
+        let data;
+        $('#count').hide();
+        var map;
+        var markers = [];
+
+        function setMapOnAll(map) {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(map);
+            }
+        }
+
+        function clearMarkers() {
+            setMapOnAll(null);
+        }
+
+        function deleteMarkers() {
+            clearMarkers();
+            markers = [];
+        }
+
+        function initMap() {
+            let cnts = 0;
+            let center = new google.maps.LatLng(35.157169, 129.059474);
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 16,
+                center: center
+            });
+            var geocoder = new google.maps.Geocoder();
+            document.getElementById('select1').addEventListener('change', function() {
+                geocodeAddress(geocoder, map);
+            });
+            map.data.loadGeoJson('koreaJson.json');
+            map.data.setStyle(function(feature) {
+                var color = '#8f8f8f';
+                return ({
+                    fillColor: color,
+                    strokeColor: color,
+                    strokeWeight: 1
+                });
+            });
+            map.data.addListener('click', function(event) {
+                map.data.revertStyle();
+                map.data.overrideStyle(event.feature, {
+                    strokeWeight: 3,
+                    fillColor: "#efefef"
+                });
+                $("#reigon").fadeIn(200).text("선택:" + event.feature['h']['name']);
+
+            });
+        }
+
+        function geocodeAddress(geocoder, resultsMap) {
+            var address = document.getElementById('select1').value;
+            $("#reigon").fadeIn(200).text("선택:" + address);
+            geocoder.geocode({
+                'address': address
+            }, function(results, status) {
+                if (status === 'OK') {
+                    resultsMap.setCenter(results[0].geometry.location);
+                    resultsMap.setZoom(14);
+                    var marker = new google.maps.Marker({
+                        map: resultsMap,
+                        zoom: 20,
+                        position: results[0].geometry.location
+                    });
+                    marker.setAnimation(google.maps.Animation.DROP);
+                    setTimeout(function() {
+                        marker.setMap(null);
+                    }, 2000)
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDF1pqbEh3QHTgfSMTnaRzJvefdSFt49GM&callback=initMap">
+    </script>
+</body></html>
